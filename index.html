@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Latihan Perbaikan & Pengayaan · Informatika dan KKA</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef3f5; --grid:rgba(31,63,209,.075); --surface:#ffffff; --surface2:#f6f9fa;
+  --ink:#14213d; --muted:#56637d; --line:#c9d4dc; --blue:#1f3fd1; --blue-ink:#ffffff;
+  --hl:#ffe14d; --hl-ink:#3a2f00; --key:#0e7c66; --key-bg:#e2f4ef; --key-line:#9fd6c8;
+  --lisan-bg:#fff6d6; --lisan-line:#ecd77b; --danger:#b42318;
+  --font-head:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1420; --grid:rgba(120,150,255,.08); --surface:#161e2e; --surface2:#1b2538;
+    --ink:#e7ecf6; --muted:#9aa8c4; --line:#2c3850; --blue:#7f97ff; --blue-ink:#0b1230;
+    --hl:#ffd93b; --hl-ink:#2f2600; --key:#5fd3b9; --key-bg:#10302a; --key-line:#1f5a4d;
+    --lisan-bg:#2b2611; --lisan-line:#5c4f1a; --danger:#ff8a80;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1420; --grid:rgba(120,150,255,.08); --surface:#161e2e; --surface2:#1b2538;
+  --ink:#e7ecf6; --muted:#9aa8c4; --line:#2c3850; --blue:#7f97ff; --blue-ink:#0b1230;
+  --hl:#ffd93b; --hl-ink:#2f2600; --key:#5fd3b9; --key-bg:#10302a; --key-line:#1f5a4d;
+  --lisan-bg:#2b2611; --lisan-line:#5c4f1a; --danger:#ff8a80;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0; min-height:100%; color:var(--ink); background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+  font-family:var(--font-body); font-size:17px; line-height:1.55;
+}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;margin:0}
+p{margin:.55rem 0}
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:940px;margin:0 auto;padding:22px 18px 60px}
+
+/* ---------- halaman pilih ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:26px}
+.brand{font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--muted)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;margin-bottom:26px}
+.hero h1{font-size:clamp(2rem,6vw,3.3rem);font-weight:800;letter-spacing:-.02em}
+.hero h1 mark{background:linear-gradient(transparent 55%,var(--hl) 55%);color:inherit;padding:0 .1em}
+.hero p.lead{color:var(--muted);max-width:46ch;margin-top:.8rem}
+.stamp{
+  width:150px;height:150px;border:3px solid var(--blue);border-radius:18px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transform:rotate(-4deg);background:var(--surface);
+  box-shadow:5px 5px 0 var(--blue);
+}
+.stamp .k{font-family:var(--font-head);font-weight:700;font-size:1.25rem;color:var(--muted);min-height:1.6rem}
+.stamp .n{font-family:var(--font-head);font-weight:800;font-size:4rem;line-height:1;color:var(--blue)}
+.stamp.empty .n{color:var(--line)}
+.panel{background:var(--surface);border:2px solid var(--ink);border-radius:14px;padding:20px;margin-bottom:18px}
+.panel h2{font-size:1.25rem;margin-bottom:12px}
+.panel h2 small{font-family:var(--font-body);font-weight:500;color:var(--muted);font-size:.9rem;margin-left:8px}
+.kelas-row{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.absen-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
+.pick{
+  background:var(--surface2);border:2px solid var(--line);border-radius:10px;padding:10px 4px;
+  font-family:var(--font-head);font-weight:700;font-size:1.05rem;text-align:center;min-height:46px;
+}
+.pick:hover:not(:disabled){border-color:var(--blue)}
+.pick[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--blue-ink)}
+.pick:disabled{opacity:.4;cursor:not-allowed}
+.btn{
+  border:2px solid var(--ink);background:var(--surface);border-radius:11px;padding:10px 18px;font-weight:600;
+  min-height:46px;
+}
+.btn:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:var(--blue-ink);font-weight:700}
+.btn.primary:hover:not(:disabled){box-shadow:3px 3px 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.small{min-height:38px;padding:6px 13px;font-size:.92rem}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.hint{color:var(--muted);font-size:.93rem}
+.guru-banner{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--key-bg);border:2px solid var(--key);color:var(--ink);border-radius:12px;padding:10px 14px;margin-bottom:18px;
+}
+.guru-banner b{color:var(--key)}
+.linkbtn{background:none;border:none;color:var(--muted);text-decoration:underline;padding:6px;font-size:.92rem}
+.linkbtn:hover{color:var(--blue)}
+footer.foot{margin-top:28px;text-align:center}
+
+/* ---------- halaman soal ---------- */
+.toolbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);
+  border:2px solid var(--ink);border-radius:14px;padding:10px 14px;margin-bottom:18px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+}
+.who{display:flex;align-items:center;gap:12px}
+.who .id{
+  font-family:var(--font-head);font-weight:800;font-size:1.3rem;background:var(--hl);color:var(--hl-ink);
+  padding:2px 12px;border-radius:8px;
+}
+.brief{
+  background:var(--surface);border:2px dashed var(--muted);border-radius:12px;padding:12px 16px;margin-bottom:22px;
+}
+.brief b{font-family:var(--font-head)}
+.grp{font-size:1.5rem;margin:30px 0 12px;font-weight:800}
+.grp small{font-family:var(--font-body);font-weight:500;font-size:.9rem;color:var(--muted);margin-left:8px}
+.q{background:var(--surface);border:2px solid var(--ink);border-radius:14px;padding:18px 20px 20px;margin-bottom:20px}
+.q>header{display:flex;gap:14px;align-items:center;margin-bottom:8px}
+.q .no{
+  flex:none;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--surface);
+  display:grid;place-items:center;font-family:var(--font-head);font-weight:800;font-size:1.25rem;
+}
+.q h3{font-size:1.3rem}
+.q .sub{margin-top:1rem;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:.7rem 0}
+.chip{
+  display:inline-flex;flex-direction:column;align-items:center;min-width:52px;padding:2px 10px 6px;
+  background:var(--surface2);border:2px solid var(--ink);border-radius:9px;font-family:var(--font-mono);
+  font-weight:600;font-size:1.1rem;line-height:1.2;
+}
+.chip i{font-style:normal;font-weight:400;font-size:.68rem;color:var(--muted)}
+.rule{background:var(--surface2);border-left:5px solid var(--blue);padding:8px 14px;border-radius:0 8px 8px 0;font-size:.95rem;margin:.8rem 0}
+.tablewrap{overflow-x:auto;max-width:100%;margin:.6rem 0}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{border:1.5px solid var(--ink);padding:7px 10px;text-align:left;vertical-align:top;font-size:.95rem}
+th{background:var(--surface2);font-family:var(--font-head);font-weight:700}
+table.sheet td{height:2.6rem;font-family:var(--font-mono)}
+table.sheet td:first-child{font-weight:600;text-align:center;width:4.5rem;background:var(--surface2)}
+table.filled td{font-family:var(--font-mono);font-size:.9rem}
+ol.steps,ul.list{margin:.4rem 0;padding-left:1.4rem}
+ol.steps li,ul.list li{margin:.25rem 0}
+.quote{
+  background:var(--surface2);border:2px solid var(--line);border-radius:10px;padding:10px 14px;font-style:italic;margin:.7rem 0;
+}
+.ipo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:.5rem}
+.ipo>div{border:2px solid var(--key-line);border-radius:10px;padding:8px 12px;background:var(--surface)}
+.ipo h5{margin:0 0 4px;font-family:var(--font-head);font-size:1.02rem;color:var(--key)}
+.ipo ul{margin:0;padding-left:1.1rem;font-size:.93rem}
+
+/* kunci & lisan (guru) */
+.kunci{background:var(--key-bg);border:2px solid var(--key);border-radius:12px;padding:12px 16px;margin-top:18px}
+.kunci h4,.lisan h4{font-size:1.05rem;margin-bottom:6px}
+.kunci h4{color:var(--key)}
+.lisan{background:var(--lisan-bg);border:2px solid var(--lisan-line);border-radius:12px;padding:12px 16px;margin-top:12px}
+.kunci table{background:var(--surface)}
+.kunci p{margin:.4rem 0}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,16,32,.6);display:grid;place-items:center;padding:18px;z-index:50}
+.modal[hidden]{display:none}
+.dialog{background:var(--surface);border:2px solid var(--ink);border-radius:16px;padding:22px;max-width:420px;width:100%;box-shadow:6px 6px 0 var(--ink)}
+.dialog h3{font-size:1.35rem;margin-bottom:8px}
+.dialog input{
+  width:100%;padding:12px;border:2px solid var(--ink);border-radius:10px;font-size:1.3rem;letter-spacing:.3em;
+  background:var(--surface2);color:var(--ink);font-family:var(--font-mono);margin:10px 0 4px;
+}
+.err{color:var(--danger);min-height:1.4em;font-size:.93rem;font-weight:600}
+.dialog .actions{margin-top:14px;justify-content:flex-end}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .hero{grid-template-columns:1fr}
+  .stamp{width:120px;height:120px;order:-1}
+  .stamp .n{font-size:3rem}
+  .kelas-row{grid-template-columns:repeat(5,1fr);gap:6px}
+  .ipo{grid-template-columns:1fr}
+  .q{padding:14px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} .btn:hover{transform:none!important} }
+
+@media print{
+  :root{padding:0}
+  body{background:#fff!important;color:#000!important;font-size:12pt}
+  .noprint,.toolbar,.modal,footer.foot{display:none!important}
+  .q,.brief,.panel{border-color:#000!important;background:#fff!important;box-shadow:none!important;break-inside:avoid}
+  th,td{border-color:#000!important;background:#fff!important;color:#000!important}
+  .chip{border-color:#000!important;background:#fff!important;color:#000!important}
+  .kunci,.lisan{display:none!important}
+  body.print-key .kunci,body.print-key .lisan{display:block!important;background:#fff!important;border-color:#000!important;color:#000!important}
+  .wrap{padding:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="modal" id="modal" hidden></div>
+
+<script>
+/*==GEN-START==*/
+const SALT = 'infx-2026-v1';
+const PIN_HASH = 4207149899;
+
+function xmur3(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}return function(){h=Math.imul(h^(h>>>16),2246822507);h=Math.imul(h^(h>>>13),3266489909);return(h^=h>>>16)>>>0;};}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
+function makeRng(k,a,topic){
+  const f=mulberry32(xmur3(SALT+'|'+k+'|'+a+'|'+topic)());
+  return {
+    f,
+    int:(lo,hi)=>lo+Math.floor(f()*(hi-lo+1)),
+    pick:arr=>arr[Math.floor(f()*arr.length)],
+    chance:p=>f()<p,
+    step:(lo,hi,st)=>lo+st*Math.floor(f()*((hi-lo)/st+1)),
+    shuffle(arr){const c=arr.slice();for(let i=c.length-1;i>0;i--){const j=Math.floor(f()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;}
+  };
+}
+
+const rp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
+const arrTxt = arr => '[' + arr.join(', ') + ']';
+const chips = arr => '<div class="chips">' + arr.map((v,i)=>`<span class="chip"><i>${i+1}</i>${v}</span>`).join('') + '</div>';
+const li = arr => arr.map(x=>`<li>${x}</li>`).join('');
+function blankTable(cols, n, firstFn){
+  return `<div class="tablewrap"><table class="sheet"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`+
+    Array.from({length:n},(_,i)=>`<tr>${cols.map((c,j)=>`<td>${j===0&&firstFn?firstFn(i):''}</td>`).join('')}</tr>`).join('')+
+    `</tbody></table></div>`;
+}
+function filledTable(cols, rows){
+  return `<div class="tablewrap"><table class="filled"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`+
+    rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')+`</tbody></table></div>`;
+}
+function payStat(uang,bayar){
+  return uang>=bayar
+    ? {ok:true, txt:'uang cukup', selTxt:`Kembalian = ${rp(uang)} − ${rp(bayar)} = ${rp(uang-bayar)}`}
+    : {ok:false, txt:'uang tidak cukup', selTxt:`Kekurangan = ${rp(bayar)} − ${rp(uang)} = ${rp(bayar-uang)}`};
+}
+
+/* ================= 1. INSERTION SORT ================= */
+function insertionTrace(arr, asc){
+  const a=arr.slice(); const steps=[]; let totalC=0,totalS=0;
+  for(let i=1;i<a.length;i++){
+    const key=a[i]; let j=i-1,c=0,s=0;
+    while(j>=0){
+      c++;
+      if(asc ? a[j]>key : a[j]<key){ a[j+1]=a[j]; j--; s++; } else break;
+    }
+    a[j+1]=key;
+    steps.push({langkah:i,key,comps:c,shifts:s,pos:j+2,arr:a.slice()});
+    totalC+=c; totalS+=s;
+  }
+  return {steps,final:a,totalC,totalS};
+}
+function genInsertion(k,a){
+  const r=makeRng(k,a,'ins'); let data,asc,tr,dup;
+  for(let t=0;t<400;t++){
+    const base=new Set([a]);
+    while(base.size<7) base.add(r.int(10,99));
+    const arr=[...base];
+    dup=r.pick(arr.filter(v=>v!==a));
+    data=r.shuffle([...arr,dup]);
+    asc=r.chance(0.6);
+    tr=insertionTrace(data,asc);
+    if(tr.totalS>=10&&tr.totalS<=20&&tr.steps.some(s=>s.shifts===0)&&tr.steps.some(s=>s.shifts>=3)) break;
+  }
+  const ord = asc?'terkecil ke terbesar (ascending)':'terbesar ke terkecil (descending)';
+  const n=data.length;
+  const soal = `
+    <p>Diberikan data berikut (angka kecil di atas kotak adalah indeks, dimulai dari 1):</p>
+    ${chips(data)}
+    <p>Urutkan data dari <b>${ord}</b> menggunakan <b>insertion sort</b>. Elemen ke-1 dianggap sudah terurut, sehingga langkah 1 memproses elemen ke-2.</p>
+    <div class="rule"><b>Aturan hitung.</b> Setiap kali kunci dibandingkan dengan satu elemen di sebelah kirinya dihitung <b>1 perbandingan</b>, termasuk perbandingan terakhir yang menghentikan pergeseran. <b>Pergeseran</b> adalah jumlah elemen yang digeser satu tempat ke kanan.</div>
+    <p class="sub">a) Salin dan lengkapi tabel berikut.</p>
+    ${blankTable(['Langkah','Kunci','Jumlah perbandingan','Jumlah pergeseran','Posisi akhir kunci (indeks)','Kondisi data setelah langkah'], n-1, i=>i+1)}
+    <p class="sub">b) Tentukan total perbandingan, total pergeseran, dan susunan akhir data.</p>
+    <p class="sub">c) Nilai <b>${dup}</b> muncul dua kali di data. Setelah diurutkan, apakah urutan kedua nilai itu saling bertukar? Siapkan penjelasanmu.</p>`;
+  const rows = tr.steps.map(s=>[s.langkah,s.key,s.comps,s.shifts,s.pos,arrTxt(s.arr)]);
+  const kunci = `
+    <p>Urutan: ${ord}.</p>
+    ${filledTable(['Langkah','Kunci','Perbandingan','Pergeseran','Posisi akhir','Data setelah langkah'],rows)}
+    <p><b>Total perbandingan = ${tr.totalC}</b>, <b>total pergeseran = ${tr.totalS}</b>.<br>Susunan akhir: <b>${arrTxt(tr.final)}</b></p>
+    <p>Nilai kembar ${dup}: pembanding memakai tanda ${asc?'&gt;':'&lt;'} (bukan ${asc?'≥':'≤'}), sehingga elemen sama tidak digeser dan urutan aslinya tetap (sifat <i>stabil</i>).</p>`;
+  const mx=tr.steps.reduce((m,s)=>s.shifts>m.shifts?s:m,tr.steps[0]);
+  const zero=tr.steps.find(s=>s.shifts===0);
+  const lisan=[
+    `Pada langkah ${mx.langkah}, kunci ${mx.key} bergeser ${mx.shifts} kali. Jelaskan elemen mana yang digeser dan mengapa berhenti di situ.`,
+    `Pada langkah ${zero.langkah} kunci ${zero.key} tidak bergeser sama sekali. Apa artinya, dan mengapa tetap dihitung ${zero.comps} perbandingan?`,
+    `Angka nomor absenmu (${a}) berakhir di indeks ${tr.final.indexOf(a)+1}. Pada langkah keberapa ia diproses sebagai kunci, dan bagaimana ia sampai ke posisi itu?`,
+    `Kalau data awal sudah terurut, berapa total perbandingan dan pergeseran insertion sort untuk ${n} data? Mengapa?`
+  ];
+  return {soal,kunci,lisan};
+}
+
+/* ================= 2. LINEAR SEARCH ================= */
+function genLinear(k,a){
+  const r=makeRng(k,a,'lin'); const n=12;
+  const mode=r.pick(['ada','ada','absen','tidak']);
+  let data,target;
+  for(let t=0;t<600;t++){
+    const s=new Set([a]); while(s.size<n) s.add(r.int(5,99));
+    data=r.shuffle([...s]);
+    const ia=data.indexOf(a);
+    if(mode==='absen'){ if(ia>=4&&ia<=n-2){target=a;break;} continue; }
+    if(mode==='ada'){
+      const cand=[]; for(let i=4;i<=n-2;i++) if(data[i]!==a) cand.push(i);
+      const ti=r.pick(cand); target=data[ti];
+      if(r.chance(0.5)){
+        const later=[]; for(let i=ti+1;i<n;i++) if(data[i]!==a) later.push(i);
+        if(later.length){ data[r.pick(later)]=target; }
+      }
+      break;
+    }
+    do{target=r.int(5,99);}while(data.includes(target));
+    break;
+  }
+  const idx=data.indexOf(target);
+  const occ=[]; data.forEach((v,i)=>{if(v===target)occ.push(i+1);});
+  const comps= idx>=0 ? idx+1 : n;
+  const tTxt = mode==='absen' ? `Target yang dicari adalah <b>nomor absenmu sendiri</b>, yaitu <b>${a}</b>.` : `Target yang dicari: <b>${target}</b>.`;
+  const soal=`
+    <p>Diberikan data berikut (angka kecil di atas kotak adalah indeks):</p>
+    ${chips(data)}
+    <p>${tTxt} Lakukan <b>linear search</b> dari indeks 1 ke kanan.</p>
+    <p class="sub">a) Salin tabel berikut, lalu isi sampai pencarian berhenti. Baris yang tidak terpakai dikosongkan.</p>
+    ${blankTable(['Langkah','Elemen yang dibandingkan','Keterangan (bukan target / target)'], n, i=>i+1)}
+    <p class="sub">b) Pencarian berhenti pada langkah ke berapa? Berapa jumlah perbandingannya, dan apa hasil pencariannya (indeks berapa atau tidak ditemukan)?</p>
+    <p class="sub">c) Untuk data sebanyak ${n} elemen ini, berapa jumlah perbandingan paling sedikit dan paling banyak yang mungkin terjadi pada linear search?</p>`;
+  const stop = idx>=0 ? idx+1 : n;
+  const rows=[]; for(let i=0;i<stop;i++) rows.push([i+1,data[i], (i===idx)?'<b>TARGET</b> → berhenti':'bukan target']);
+  const kunci=`
+    ${filledTable(['Langkah','Elemen','Keterangan'],rows)}
+    <p>${idx>=0?`Ditemukan di <b>indeks ${idx+1}</b> setelah <b>${comps} perbandingan</b>.`:`Seluruh <b>${n} elemen</b> diperiksa, target <b>tidak ditemukan</b> (${n} perbandingan).`}</p>
+    <p>Perbandingan minimum = 1 (target di indeks 1), maksimum = ${n} (target di indeks ${n} atau tidak ada).</p>`;
+  const lisan=[];
+  if(idx>=0){
+    lisan.push(`Mengapa pencarian berhenti di langkah ${comps}? Apa yang akan terjadi kalau tidak berhenti?`);
+    if(occ.length>1) lisan.push(`Nilai ${target} muncul di indeks ${occ.join(' dan ')}. Mengapa yang dilaporkan hanya indeks ${occ[0]}?`);
+  } else {
+    lisan.push(`Bagaimana kamu memastikan ${target} benar-benar tidak ada? Mengapa harus ${n} perbandingan dulu?`);
+  }
+  lisan.push(`Kalau data ini sudah terurut, metode apa yang lebih cepat? Berapa perbandingan kira-kira dengan metode itu?`);
+  lisan.push(`Kapan linear search justru lebih masuk akal dipakai daripada binary search?`);
+  return {soal,kunci,lisan};
+}
+
+/* ================= 3. BINARY SEARCH ================= */
+function binTrace(s,t){
+  let lo=1,hi=s.length; const rows=[]; let found=-1;
+  while(lo<=hi){
+    const mid=Math.floor((lo+hi)/2), v=s[mid-1];
+    if(v===t){ rows.push({lo,hi,mid,v,ket:`${v} = ${t} → <b>ditemukan (target)</b>`}); found=mid; break; }
+    else if(v<t){ rows.push({lo,hi,mid,v,ket:`${v} &lt; ${t} → batas bawah = ${mid}+1 = ${mid+1}`}); lo=mid+1; }
+    else { rows.push({lo,hi,mid,v,ket:`${v} &gt; ${t} → batas atas = ${mid}−1 = ${mid-1}`}); hi=mid-1; }
+  }
+  return {rows,found,endLo:lo,endHi:hi};
+}
+function genBinary(k,a){
+  const r=makeRng(k,a,'bin'); const n=11;
+  let data,sorted,target,tr,mode;
+  for(let t=0;t<600;t++){
+    const s=new Set([a]); while(s.size<n) s.add(r.int(5,99));
+    data=r.shuffle([...s]); sorted=[...data].sort((x,y)=>x-y);
+    mode=r.pick(['ada','ada','absen','tidak']);
+    if(mode==='absen') target=a;
+    else if(mode==='ada') target=r.pick(sorted.filter(v=>v!==a));
+    else { do{target=r.int(5,99);}while(sorted.includes(target)); }
+    tr=binTrace(sorted,target);
+    if(tr.rows.length>=3) break;
+  }
+  const tTxt = mode==='absen' ? `Target yang dicari adalah <b>nomor absenmu sendiri</b>, yaitu <b>${a}</b>.` : `Target yang dicari: <b>${target}</b>.`;
+  const soal=`
+    <p>Diberikan data yang <b>belum terurut</b> (angka kecil di atas kotak adalah indeks):</p>
+    ${chips(data)}
+    <p>${tTxt} Cari target dengan <b>binary search</b>. Data harus diurutkan lebih dulu dari terkecil ke terbesar.</p>
+    <div class="rule"><b>Aturan.</b> Indeks dimulai dari 1. Indeks tengah = pembulatan ke bawah dari (batas bawah + batas atas) ÷ 2. Jika nilai tengah &lt; target, batas bawah = tengah + 1. Jika nilai tengah &gt; target, batas atas = tengah − 1.</div>
+    <p class="sub">a) Tulis hasil pengurutan data.</p>
+    <p class="sub">b) Salin dan lengkapi tabel berikut. Baris yang tidak terpakai dikosongkan.</p>
+    ${blankTable(['Langkah','Batas bawah (indeks)','Batas atas (indeks)','Indeks tengah','Nilai tengah','Keterangan'], 5, i=>i+1)}
+    <p class="sub">c) Berapa langkah yang dibutuhkan, dan apa hasil pencariannya (indeks berapa atau tidak ditemukan)?</p>
+    <p class="sub">d) Jika pada data terurut yang sama dipakai linear search, berapa perbandingan yang dibutuhkan? Mana yang lebih efisien?</p>`;
+  const linC = sorted.indexOf(target)>=0 ? sorted.indexOf(target)+1 : n;
+  const rows=tr.rows.map((x,i)=>[i+1,x.lo,x.hi,x.mid,x.v,x.ket]);
+  const kunci=`
+    <p>Data terurut: <b>${arrTxt(sorted)}</b></p>
+    ${filledTable(['Langkah','Batas bawah','Batas atas','Indeks tengah','Nilai tengah','Keterangan'],rows)}
+    <p>${tr.found>0?`Ditemukan di <b>indeks ${tr.found}</b> setelah <b>${tr.rows.length} langkah</b>.`:`Setelah langkah ${tr.rows.length}: batas bawah (${tr.endLo}) &gt; batas atas (${tr.endHi}), sehingga target <b>tidak ditemukan</b> (${tr.rows.length} langkah).`}</p>
+    <p>Linear search pada data terurut: <b>${linC} perbandingan</b> (binary search: ${tr.rows.length}).</p>`;
+  const lisan=[
+    `Mengapa data harus diurutkan lebih dulu? Apa yang bisa salah kalau binary search dijalankan pada data awal yang acak?`,
+    `Pada langkah 1, nilai tengah adalah ${tr.rows[0].v}. Mengapa sebagian data boleh langsung dibuang, dan bagian mana yang dibuang?`,
+    tr.found>0 ? `Untuk ${n} data, paling banyak berapa langkah yang dibutuhkan binary search? Mengapa?` : `Bagaimana kamu tahu target tidak ada? Kondisi apa yang menghentikan pencarian?`,
+    `Kalau jumlah data menjadi dua kali lipat, kira-kira bertambah berapa langkah binary search?`
+  ];
+  return {soal,kunci,lisan};
+}
+
+/* ================= 4. INPUT - PROSES - OUTPUT ================= */
+function ipoDiskon(r,a){
+  const n1=r.pick(['buku tulis','buku gambar','map plastik','penggaris set']);
+  const n2=r.pick(['pulpen','pensil','spidol','penghapus']);
+  const p1=r.step(3500,9500,500),q1=r.int(3,8),p2=r.step(1500,6000,500),q2=r.int(2,7);
+  const pct=r.pick([5,10,15]),k2=r.pick([2000,2500,3000]);
+  const t1=p1*q1,t2=p2*q2,total=t1+t2;
+  const batas=Math.max(10000,Math.round(total*r.pick([0.8,0.9,1.1,1.2])/5000)*5000);
+  const uang=a*k2; const ada=total>=batas; const dsk=ada?Math.round(total*pct/100):0; const bayar=total-dsk;
+  const st=payStat(uang,bayar);
+  return {
+    cerita:`Seorang siswa membeli ${q1} ${n1} seharga ${rp(p1)} per buah dan ${q2} ${n2} seharga ${rp(p2)} per buah. Toko memberi diskon ${pct}% jika total belanja <b>mencapai ${rp(batas)} atau lebih</b>. Ia membawa uang sebesar <b>nomor absenmu × ${rp(k2)}</b>.`,
+    input:[`Harga ${n1} = ${rp(p1)}`,`Jumlah ${n1} = ${q1}`,`Harga ${n2} = ${rp(p2)}`,`Jumlah ${n2} = ${q2}`,`Batas diskon = ${rp(batas)}`,`Persentase diskon = ${pct}%`,`Uang yang dibawa = ${a} × ${rp(k2)} = ${rp(uang)}`],
+    proses:[`Total ${n1} = ${rp(p1)} × ${q1} = ${rp(t1)}`,`Total ${n2} = ${rp(p2)} × ${q2} = ${rp(t2)}`,`Total belanja = ${rp(t1)} + ${rp(t2)} = ${rp(total)}`,`Bandingkan: total belanja ≥ ${rp(batas)}? → ${ada?'ya':'tidak'}`,`Diskon = ${ada?`${pct}% × ${rp(total)} = ${rp(dsk)}`:'Rp0 (syarat tidak terpenuhi)'}`,`Total bayar = ${rp(total)} − ${rp(dsk)} = ${rp(bayar)}`,`Bandingkan: uang ≥ total bayar? → ${st.ok?'ya':'tidak'}`,st.selTxt],
+    output:[`Total belanja = ${rp(total)}`,`Diskon = ${rp(dsk)}`,`Total yang dibayar = ${rp(bayar)}`,`Status: <b>${st.txt}</b>`,st.selTxt],
+    lisan:[`Data mana yang termasuk input dan mana yang hasil proses? Mengapa "total belanja" bukan input?`,`Kalau total belanja tepat ${rp(batas)}, apakah dapat diskon? Bagaimana kamu tahu dari kalimat soal?`,`Pada kasus ${a>=1?`nomor absenmu`:''}, kondisi mana yang menentukan status uang cukup atau tidak? Berapa selisihnya?`]
+  };
+}
+function ipoOngkir(r,a){
+  const brg=r.pick(['kaos','tas','topi','jaket','sepatu']);
+  const p=r.step(30000,90000,5000),q=r.int(1,3),bw=r.pick([0.5,1,1.5]),ok=r.step(4000,9000,500);
+  const belanja=p*q;
+  const gratis=Math.max(50000,Math.round(belanja*r.pick([0.8,1.2])/25000)*25000);
+  const k2=r.pick([5000,7500,10000]); const uang=a*k2;
+  const berat=bw*q, kg=Math.ceil(berat);
+  const free=belanja>=gratis; const ong=free?0:kg*ok; const bayar=belanja+ong;
+  const st=payStat(uang,bayar);
+  const bwT=String(bw).replace('.',',');
+  return {
+    cerita:`Seorang siswa memesan ${q} ${brg} secara daring seharga ${rp(p)} per buah. Berat tiap ${brg} adalah ${bwT} kg dan ongkos kirim ${rp(ok)} per kg (berat total <b>dibulatkan ke atas</b> ke kg terdekat). Ongkos kirim <b>gratis</b> jika total belanja minimal ${rp(gratis)}. Ia membawa uang sebesar <b>nomor absenmu × ${rp(k2)}</b>.`,
+    input:[`Harga ${brg} = ${rp(p)}`,`Jumlah ${brg} = ${q}`,`Berat per ${brg} = ${bwT} kg`,`Ongkos kirim per kg = ${rp(ok)}`,`Batas gratis ongkir = ${rp(gratis)}`,`Uang yang dibawa = ${a} × ${rp(k2)} = ${rp(uang)}`],
+    proses:[`Total belanja = ${rp(p)} × ${q} = ${rp(belanja)}`,`Berat total = ${bwT} × ${q} = ${String(berat).replace('.',',')} kg → dibulatkan ke atas = ${kg} kg`,`Bandingkan: total belanja ≥ ${rp(gratis)}? → ${free?'ya':'tidak'}`,`Ongkir = ${free?'Rp0 (gratis)':`${kg} × ${rp(ok)} = ${rp(ong)}`}`,`Total bayar = ${rp(belanja)} + ${rp(ong)} = ${rp(bayar)}`,`Bandingkan: uang ≥ total bayar? → ${st.ok?'ya':'tidak'}`,st.selTxt],
+    output:[`Total belanja = ${rp(belanja)}`,`Ongkos kirim = ${rp(ong)}`,`Total yang dibayar = ${rp(bayar)}`,`Status: <b>${st.txt}</b>`,st.selTxt],
+    lisan:[`Mengapa berat total harus dibulatkan ke atas? Apa yang terjadi kalau dibulatkan ke bawah?`,`Kalau jumlah ${brg} ditambah 1, apakah ongkirnya berubah? Bagian proses mana yang ikut berubah?`,`Syarat gratis ongkir memakai "minimal". Apa bedanya dengan "lebih dari" untuk total belanja tepat ${rp(gratis)}?`]
+  };
+}
+function ipoKantin(r,a){
+  const f=r.pick(['nasi ayam','mie goreng','soto ayam','nasi goreng']),d=r.pick(['es teh','jus jeruk','es kelapa']);
+  const pf=r.step(10000,18000,1000),qf=r.int(1,3),pd=r.step(3000,9000,500),qd=r.int(1,4);
+  const tumbler=r.chance(0.5),k2=r.pick([2000,2500,3000]);
+  const sf=pf*qf,sd=pd*qd,sub=sf+sd,pajak=Math.round(sub*0.1),pot=tumbler?1000*qd:0,bayar=sub+pajak-pot,uang=a*k2;
+  const st=payStat(uang,bayar);
+  return {
+    cerita:`Di kantin sekolah, seorang siswa membeli ${qf} porsi ${f} seharga ${rp(pf)} per porsi dan ${qd} gelas ${d} seharga ${rp(pd)} per gelas. Kantin menambahkan <b>pajak 10%</b> dari total pembelian. Siswa yang membawa tumbler sendiri mendapat <b>potongan ${rp(1000)} per gelas minuman</b>. Siswa ini ${tumbler?'<b>membawa</b>':'<b>tidak membawa</b>'} tumbler dan membawa uang sebesar <b>nomor absenmu × ${rp(k2)}</b>.`,
+    input:[`Harga ${f} = ${rp(pf)}`,`Jumlah ${f} = ${qf}`,`Harga ${d} = ${rp(pd)}`,`Jumlah ${d} = ${qd}`,`Pajak = 10%`,`Potongan tumbler = ${rp(1000)} per gelas`,`Membawa tumbler = ${tumbler?'ya':'tidak'}`,`Uang yang dibawa = ${a} × ${rp(k2)} = ${rp(uang)}`],
+    proses:[`Total ${f} = ${rp(pf)} × ${qf} = ${rp(sf)}`,`Total ${d} = ${rp(pd)} × ${qd} = ${rp(sd)}`,`Subtotal = ${rp(sf)} + ${rp(sd)} = ${rp(sub)}`,`Pajak = 10% × ${rp(sub)} = ${rp(pajak)}`,`Bandingkan: membawa tumbler? → ${tumbler?'ya':'tidak'}`,`Potongan = ${tumbler?`${rp(1000)} × ${qd} = ${rp(pot)}`:'Rp0'}`,`Total bayar = ${rp(sub)} + ${rp(pajak)} − ${rp(pot)} = ${rp(bayar)}`,`Bandingkan: uang ≥ total bayar? → ${st.ok?'ya':'tidak'}`,st.selTxt],
+    output:[`Subtotal = ${rp(sub)}`,`Pajak = ${rp(pajak)}`,`Potongan = ${rp(pot)}`,`Total yang dibayar = ${rp(bayar)}`,`Status: <b>${st.txt}</b>`,st.selTxt],
+    lisan:[`Pajak dihitung dari subtotal sebelum atau sesudah potongan? Bagaimana kamu tahu dari soal?`,`"Membawa tumbler" itu input, proses, atau output? Jelaskan.`,`Kalau siswa tidak membawa tumbler, bagian proses mana yang berubah dan mana yang tetap?`]
+  };
+}
+function ipoParkir(r,a){
+  const motor=r.chance(0.5); const v=motor?'sepeda motor':'mobil';
+  const t1=motor?r.step(2000,3000,500):r.step(4000,6000,500);
+  const t2=motor?r.step(1000,2000,500):r.step(2000,3000,500);
+  const mx=motor?r.step(8000,12000,1000):r.step(20000,30000,2500);
+  const menit=r.int(70,410),jam=Math.ceil(menit/60);
+  const k2=motor?r.pick([500,1000]):r.pick([1000,1500]); const uang=a*k2;
+  const hit=t1+(jam-1)*t2, biaya=Math.min(hit,mx), st=payStat(uang,biaya);
+  return {
+    cerita:`Seorang pengendara ${v} memarkir kendaraannya selama <b>${menit} menit</b>. Tarif parkir jam pertama ${rp(t1)}, tiap jam berikutnya ${rp(t2)}. Sisa waktu kurang dari satu jam <b>dihitung satu jam penuh</b>. Tarif maksimum per hari adalah ${rp(mx)}. Pengendara membawa uang sebesar <b>nomor absenmu × ${rp(k2)}</b>.`,
+    input:[`Lama parkir = ${menit} menit`,`Tarif jam pertama = ${rp(t1)}`,`Tarif jam berikutnya = ${rp(t2)}`,`Tarif maksimum per hari = ${rp(mx)}`,`Uang yang dibawa = ${a} × ${rp(k2)} = ${rp(uang)}`],
+    proses:[`Lama parkir dalam jam = ${menit} ÷ 60 = ${(menit/60).toFixed(2).replace('.',',')} → dibulatkan ke atas = ${jam} jam`,`Biaya sebelum batas = ${rp(t1)} + (${jam} − 1) × ${rp(t2)} = ${rp(hit)}`,`Bandingkan: biaya ${rp(hit)} &gt; maksimum ${rp(mx)}? → ${hit>mx?'ya':'tidak'}`,`Biaya parkir = ${rp(biaya)}${hit>mx?' (memakai tarif maksimum)':''}`,`Bandingkan: uang ≥ biaya parkir? → ${st.ok?'ya':'tidak'}`,st.selTxt],
+    output:[`Lama parkir (dibulatkan) = ${jam} jam`,`Biaya parkir = ${rp(biaya)}`,`Status: <b>${st.txt}</b>`,st.selTxt],
+    lisan:[`Mengapa ${menit} menit dihitung ${jam} jam? Bagian mana dari soal yang memberi tahu aturan ini?`,`Apa fungsi tarif maksimum di dalam proses? Pada perhitunganmu, apakah tarif itu dipakai?`,`Kalau lama parkir berubah menjadi 60 menit, jam yang dihitung berapa? Mengapa?`]
+  };
+}
+function genIPO(k,a){
+  const r=makeRng(k,a,'ipo');
+  const s=r.pick([ipoDiskon,ipoOngkir,ipoKantin,ipoParkir])(r,a);
+  const soal=`
+    <p>${s.cerita}</p>
+    <p class="sub">a) Tentukan <b>Input</b>, <b>Proses</b>, dan <b>Output</b> dari kasus tersebut.</p>
+    <p class="sub">b) Hitunglah nilai uang yang kamu bawa, total yang harus dibayar, dan tentukan status (uang cukup / uang tidak cukup) beserta selisihnya.</p>`;
+  const kunci=`
+    <div class="ipo">
+      <div><h5>Input</h5><ul>${li(s.input)}</ul></div>
+      <div><h5>Proses</h5><ul>${li(s.proses)}</ul></div>
+      <div><h5>Output</h5><ul>${li(s.output)}</ul></div>
+    </div>`;
+  return {soal,kunci,lisan:s.lisan};
+}
+
+/* ================= 5. MENYUSUN ALGORITMA ================= */
+function algoFotokopi(r){
+  const p=r.step(300,700,100),pct=r.pick([5,10,15,20]),b=r.pick([40,50,80,100,120]);
+  const calc=(n,strict=true)=>{const tot=n*p;const ok=strict?n>b:n>=b;const d=ok?tot*pct/100:0;return {tot,ok,d,bayar:tot-d};};
+  return {
+    cerita:`Sebuah toko fotokopi mengenakan biaya ${rp(p)} per lembar. Pelanggan yang memfotokopi <b>lebih dari ${b} lembar</b> mendapat diskon ${pct}% dari total biaya.`,
+    unit:'lembar', tests:[b-r.int(2,Math.floor(b/2)),b,b+r.int(10,60)], opNow:'&gt;', opAlt:'≥', kond:`jumlah lembar &gt; ${b}`,
+    steps:['Mulai.','Masukkan jumlah lembar fotokopi (n).',`Hitung total biaya = n × ${rp(p)}.`,`Jika n &gt; ${b}, maka diskon = total biaya × ${pct}%; jika tidak, diskon = 0.`,'Hitung total bayar = total biaya − diskon.','Tampilkan jumlah lembar, diskon, dan total bayar.','Selesai.'],
+    fmt:n=>{const c=calc(n);return {ok:c.ok,detail:`${n} × ${rp(p)} = ${rp(c.tot)}; diskon = ${rp(c.d)}`,hasil:rp(c.bayar)};},
+    alt:n=>rp(calc(n,false).bayar)
+  };
+}
+function algoWarnet(r){
+  const tarif=r.step(3000,6000,500),H=r.int(3,6);
+  const calc=(n,strict=false)=>{const ok=strict?n>H:n>=H;const j=ok?n-1:n;return {ok,j,bayar:j*tarif};};
+  return {
+    cerita:`Sebuah warnet menetapkan tarif ${rp(tarif)} per jam. Pelanggan yang bermain <b>minimal ${H} jam</b> mendapat bonus gratis 1 jam (jam bonus tidak dibayar).`,
+    unit:'jam', tests:[H-1,H,H+r.int(1,3)], opNow:'≥', opAlt:'&gt;', kond:`lama bermain ≥ ${H} jam`,
+    steps:['Mulai.','Masukkan lama bermain dalam jam (n).',`Jika n ≥ ${H}, maka jam dibayar = n − 1; jika tidak, jam dibayar = n.`,`Hitung total bayar = jam dibayar × ${rp(tarif)}.`,'Tampilkan lama bermain, jam dibayar, dan total bayar.','Selesai.'],
+    fmt:n=>{const c=calc(n);return {ok:c.ok,detail:`jam dibayar = ${c.j}; ${c.j} × ${rp(tarif)}`,hasil:rp(c.bayar)};},
+    alt:n=>rp(calc(n,true).bayar)
+  };
+}
+function algoLaundry(r){
+  const harga=r.step(5000,9000,500),fee=r.step(4000,10000,1000),B=r.int(4,8);
+  const calc=(n,strict=false)=>{const ok=strict?n>B:n>=B;const tot=n*harga;const ant=ok?0:fee;return {ok,tot,ant,bayar:tot+ant};};
+  return {
+    cerita:`Sebuah laundry kiloan menarik ${rp(harga)} per kg. Biaya antar ke rumah ${rp(fee)}, tetapi <b>gratis</b> jika berat cucian <b>minimal ${B} kg</b>.`,
+    unit:'kg', tests:[B-r.int(1,2),B,B+r.int(1,4)], opNow:'≥', opAlt:'&gt;', kond:`berat ≥ ${B} kg`,
+    steps:['Mulai.','Masukkan berat cucian dalam kg (n).',`Hitung biaya cuci = n × ${rp(harga)}.`,`Jika n ≥ ${B}, maka biaya antar = 0; jika tidak, biaya antar = ${rp(fee)}.`,'Hitung total bayar = biaya cuci + biaya antar.','Tampilkan biaya cuci, biaya antar, dan total bayar.','Selesai.'],
+    fmt:n=>{const c=calc(n);return {ok:c.ok,detail:`cuci ${rp(c.tot)} + antar ${rp(c.ant)}`,hasil:rp(c.bayar)};},
+    alt:n=>rp(calc(n,true).bayar)
+  };
+}
+function algoTiket(r){
+  const harga=r.step(15000,40000,5000),N=r.int(8,20),pct=r.pick([10,15,20]);
+  const calc=(n,strict=true)=>{const tot=n*harga;const ok=strict?n>N:n>=N;const d=ok?tot*pct/100:0;return {ok,tot,d,bayar:tot-d};};
+  return {
+    cerita:`Sebuah kolam renang menjual tiket ${rp(harga)} per orang. Rombongan yang terdiri dari <b>lebih dari ${N} orang</b> mendapat diskon ${pct}% dari total harga tiket.`,
+    unit:'orang', tests:[N-r.int(1,3),N,N+r.int(2,8)], opNow:'&gt;', opAlt:'≥', kond:`jumlah orang &gt; ${N}`,
+    steps:['Mulai.','Masukkan jumlah orang dalam rombongan (n).',`Hitung total harga = n × ${rp(harga)}.`,`Jika n &gt; ${N}, maka diskon = total harga × ${pct}%; jika tidak, diskon = 0.`,'Hitung total bayar = total harga − diskon.','Tampilkan jumlah orang, diskon, dan total bayar.','Selesai.'],
+    fmt:n=>{const c=calc(n);return {ok:c.ok,detail:`${n} × ${rp(harga)} = ${rp(c.tot)}; diskon = ${rp(c.d)}`,hasil:rp(c.bayar)};},
+    alt:n=>rp(calc(n,false).bayar)
+  };
+}
+function genAlgo(k,a){
+  const r=makeRng(k,a,'algo');
+  const s=r.pick([algoFotokopi,algoWarnet,algoLaundry,algoTiket])(r);
+  const soal=`
+    <p>${s.cerita}</p>
+    <p class="sub">a) Susun <b>algoritma</b> secara berurutan, mulai dari memasukkan data sampai menampilkan hasil akhir. Algoritma harus memuat percabangan (jika … maka …; jika tidak …).</p>
+    <p class="sub">b) Uji algoritmamu dengan tiga data berikut, lalu salin dan lengkapi tabelnya.</p>
+    ${blankTable(['Data uji','Syarat terpenuhi? (ya/tidak)','Perhitungan','Hasil akhir'],3,i=>`${s.tests[i]} ${s.unit}`)}
+    <p class="sub">c) Perhatikan data uji ke-2. Apa yang berubah pada hasilnya jika tanda syarat diganti dari “${s.opNow}” menjadi “${s.opAlt}”?</p>`;
+  const rows=s.tests.map(n=>{const f=s.fmt(n);return [`${n} ${s.unit}`,f.ok?'ya':'tidak',f.detail,f.hasil];});
+  const mid=s.tests[1];
+  const kunci=`
+    <p>Contoh algoritma:</p>
+    <ol class="steps">${li(s.steps)}</ol>
+    ${filledTable(['Data uji','Syarat terpenuhi?','Perhitungan','Hasil akhir'],rows)}
+    <p>Data uji ke-2 (${mid} ${s.unit}) tepat di batas. Dengan tanda “${s.opNow}” hasilnya <b>${s.fmt(mid).hasil}</b>, dengan “${s.opAlt}” hasilnya <b>${s.alt(mid)}</b>.</p>`;
+  const lisan=[
+    `Mengapa urutan langkah "hitung total" harus sebelum "cek syarat" (atau sebaliknya)? Apa yang salah jika urutannya ditukar?`,
+    `Data uji ke-2 tepat di batas. Mengapa tanda ${s.opNow} atau ${s.opAlt} sangat menentukan? Kata apa di soal yang menjawabnya?`,
+    `Jika tidak ada percabangan, apakah algoritmamu tetap benar untuk ketiga data uji? Data mana yang akan salah?`
+  ];
+  return {soal,kunci,lisan};
+}
+
+/* ================= 6. INSTRUKSI EKSPLISIT ================= */
+const AMB=[
+  {v:'nilai ujian',u:'',min:0,max:100,thrs:[60,65,70,75,80],dS:[1,5],
+   instr:'Beri ucapan selamat kalau nilai ujian tinggi, dan beri kata penyemangat kalau nilainya rendah.',
+   amb:['"tinggi" dan "rendah" tidak punya batas angka','isi "ucapan selamat" dan "kata penyemangat" belum ditentukan','tidak jelas nilai yang tepat di batas masuk kategori mana'],
+   hi:'Selamat, nilaimu tinggi!',lo:'Semangat, ayo belajar lagi!',hiN:'tinggi',loN:'rendah'},
+  {v:'suhu ruangan',u:'°C',min:10,max:45,thrs:[26,27,28,30],dS:[1,4],
+   instr:'Nyalakan kipas kalau ruangan panas, dan matikan kalau sudah sejuk.',
+   amb:['"panas" dan "sejuk" tidak punya batas suhu','ada rentang di antara panas dan sejuk yang tidak diatur','tidak disebut kapan suhu diperiksa dan dari sumber apa'],
+   hi:'Kipas: NYALA',lo:'Kipas: MATI',hiN:'panas',loN:'sejuk'},
+  {v:'persentase kehadiran',u:'%',min:0,max:100,thrs:[75,80,85,90],dS:[1,6],
+   instr:'Beri pujian kepada siswa yang rajin masuk, dan beri peringatan kepada siswa yang sering tidak hadir.',
+   amb:['"rajin" dan "sering tidak hadir" tidak diukur dengan angka','tidak disebut data apa yang dipakai (persentase atau jumlah hari)','isi "pujian" dan "peringatan" belum ditentukan'],
+   hi:'Pujian: kehadiranmu sangat baik!',lo:'Peringatan: tingkatkan kehadiranmu!',hiN:'rajin',loN:'sering tidak hadir'},
+  {v:'total belanja',u:' rupiah',min:0,max:5000000,thrs:[50000,75000,100000,150000],dS:[5000,20000],bad:'neg',
+   instr:'Beri diskon kalau belanjanya banyak, kalau sedikit bayar seperti biasa.',
+   amb:['"banyak" dan "sedikit" tidak punya batas rupiah','besar diskon tidak disebutkan','"seperti biasa" bukan tindakan yang jelas bagi komputer'],
+   hi:'Diskon 10% diberikan',lo:'Bayar sesuai harga normal',hiN:'banyak',loN:'sedikit'},
+  {v:'tinggi badan',u:' cm',min:50,max:220,thrs:[120,130,140,150],dS:[1,10],
+   instr:'Izinkan anak naik wahana kalau sudah cukup tinggi, kalau masih pendek suruh menunggu.',
+   amb:['"cukup tinggi" dan "pendek" tidak punya batas ukuran','"suruh menunggu" belum berupa pesan atau tindakan yang jelas','satuan tinggi tidak disebutkan'],
+   hi:'Boleh naik wahana',lo:'Belum boleh, silakan menunggu',hiN:'cukup tinggi',loN:'pendek'},
+  {v:'kecepatan kendaraan',u:' km/jam',min:0,max:200,thrs:[40,50,60,80],dS:[1,10],
+   instr:'Tampilkan peringatan jika kendaraan melaju terlalu cepat, kalau tidak biarkan saja.',
+   amb:['"terlalu cepat" tidak punya batas kecepatan','"biarkan saja" bukan tindakan yang jelas bagi komputer','isi pesan peringatan belum ditentukan'],
+   hi:'PERINGATAN: kecepatan melebihi batas!',lo:'Kecepatan aman (tidak ada peringatan)',hiN:'terlalu cepat',loN:'aman'},
+  {v:'persentase baterai',u:'%',min:0,max:100,thrs:[10,15,20,25],dS:[1,5],
+   instr:'Aktifkan mode hemat daya kalau baterai hampir habis, dan kalau masih banyak jangan diaktifkan.',
+   amb:['"hampir habis" dan "masih banyak" tidak punya batas persen','tidak disebut nilai di batas termasuk yang mana','"jangan diaktifkan" tidak menyebut pesan atau status yang harus tampil'],
+   hi:'Mode hemat daya: TIDAK aktif',lo:'Mode hemat daya: AKTIF',hiN:'masih banyak',loN:'hampir habis'}
+];
+function genAmb(k,a){
+  const r=makeRng(k,a,'amb'); const t=r.pick(AMB); const thr=r.pick(t.thrs);
+  const d1=t.dS[0]===t.dS[1]?t.dS[0]:(t.dS[1]>=1000?r.step(t.dS[0],t.dS[1],t.dS[0]):r.int(t.dS[0],t.dS[1]));
+  const d2=(t.dS[1]>=1000?r.step(t.dS[0],t.dS[1],t.dS[0]):r.int(t.dS[0],t.dS[1]));
+  const bad = t.bad==='neg' ? -r.step(1000,9000,1000) : t.max+r.int(5,20);
+  const fmtV=x=>t.u===' rupiah'?rp(x):`${x}${t.u}`;
+  const tests=[thr, Math.max(t.min,thr-d1), thr+d2, bad];
+  const res=x=> (x<t.min||x>t.max) ? 'Data tidak valid' : (x>=thr ? t.hi : t.lo);
+  const resAlt=x=> (x<t.min||x>t.max) ? 'Data tidak valid' : (x>thr ? t.hi : t.lo);
+  const rng=`${fmtV(t.min)} sampai ${fmtV(t.max)}`;
+  const soal=`
+    <p>Perhatikan instruksi yang diberikan seseorang kepada program komputer:</p>
+    <div class="quote">“${t.instr}”</div>
+    <p class="sub">a) Sebutkan minimal tiga bagian dari instruksi itu yang membuat komputer tidak bisa langsung menjalankannya, dan jelaskan alasannya.</p>
+    <p class="sub">b) Tulis ulang instruksi tersebut menjadi langkah-langkah yang <b>eksplisit, berurutan, dan terukur</b> dengan ketentuan: batas <i>${t.v}</i> adalah <b>${fmtV(thr)}</b>, dan nilai yang <b>tepat sama dengan batas</b> masuk kategori <b>“${t.hiN}”</b>.</p>
+    <p class="sub">c) Data yang valid hanya pada rentang ${rng}. Tambahkan langkah pengecekan agar data di luar rentang ditolak dengan pesan “Data tidak valid”.</p>
+    <p class="sub">d) Jalankan langkah-langkahmu dengan data berikut, lalu salin dan lengkapi tabel.</p>
+    ${blankTable(['Data masukan','Pesan / tindakan yang tampil'],4,i=>fmtV(tests[i]))}`;
+  const rows=tests.map(x=>[fmtV(x),res(x)]);
+  const kunci=`
+    <p><b>a) Bagian yang ambigu:</b></p>
+    <ul class="list">${li(t.amb)}</ul>
+    <p><b>b–c) Contoh tulisan ulang:</b></p>
+    <ol class="steps">
+      <li>Masukkan ${t.v}.</li>
+      <li>Jika ${t.v} &lt; ${fmtV(t.min)} atau &gt; ${fmtV(t.max)}, tampilkan “Data tidak valid”, lalu selesai.</li>
+      <li>Jika ${t.v} ≥ ${fmtV(thr)}, tampilkan “${t.hi}”.</li>
+      <li>Jika tidak (${t.v} &lt; ${fmtV(thr)}), tampilkan “${t.lo}”.</li>
+      <li>Selesai.</li>
+    </ol>
+    <p><b>d) Hasil uji:</b></p>
+    ${filledTable(['Data masukan','Pesan / tindakan'],rows)}
+    <p>Catatan: jika tanda ≥ diganti &gt;, data ${fmtV(thr)} berubah menjadi “${resAlt(thr)}”.</p>`;
+  const lisan=[
+    `Mengapa nilai yang tepat di batas (${fmtV(thr)}) harus ditentukan masuk kategori mana? Apa yang terjadi kalau tidak ditentukan?`,
+    `Apa akibatnya jika langkah pengecekan “Data tidak valid” diletakkan setelah percabangan, bukan sebelumnya? Coba dengan data ${fmtV(bad)}.`,
+    `Kata mana dari instruksi asli yang paling berbahaya bagi komputer, dan bagaimana kamu mengubahnya jadi angka?`
+  ];
+  return {soal,kunci,lisan};
+}
+
+function buildAll(k,a){
+  return [
+    {grp:'Informatika',judul:'Insertion Sort',...genInsertion(k,a)},
+    {grp:'Informatika',judul:'Linear Search',...genLinear(k,a)},
+    {grp:'Informatika',judul:'Binary Search',...genBinary(k,a)},
+    {grp:'KKA',judul:'Input, Proses, dan Output',...genIPO(k,a)},
+    {grp:'KKA',judul:'Menyusun Algoritma',...genAlgo(k,a)},
+    {grp:'KKA',judul:'Instruksi yang Eksplisit',...genAmb(k,a)}
+  ];
+}
+/*==GEN-END==*/
+
+/* ================= UI ================= */
+const KELAS='ABCDEFGHIJ'.split('').map(c=>'X'+c);
+const state={kelas:null,absen:null,view:'pilih',guru:false,showKey:true};
+const $app=document.getElementById('app');
+const $modal=document.getElementById('modal');
+
+function pad(n){return n<10?'0'+n:''+n;}
+
+function renderPilih(){
+  const k=state.kelas,a=state.absen,ready=k&&a;
+  $app.innerHTML=`
+    <div class="top"><span class="brand">Informatika · KKA · Kelas X</span></div>
+    ${state.guru?`<div class="guru-banner"><span><b>Mode Guru aktif.</b> Kunci jawaban dan pertanyaan lisan akan tampil di bawah setiap soal.</span><button class="btn small" onclick="keluarGuru()">Keluar mode guru</button></div>`:''}
+    <section class="hero">
+      <div>
+        <h1>Latihan <mark>perbaikan</mark> dan pengayaan</h1>
+        <p class="lead">Pilih kelas dan nomor absenmu. Soal dibuat khusus untukmu, jadi angka dan kasusnya berbeda dari teman-temanmu.</p>
+      </div>
+      <div class="stamp ${ready?'':'empty'}" aria-live="polite">
+        <span class="k">${k||'kelas'}</span>
+        <span class="n">${a?pad(a):'--'}</span>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>1. Pilih kelas</h2>
+      <div class="kelas-row">${KELAS.map(x=>`<button class="pick" aria-pressed="${x===k}" onclick="pickKelas('${x}')">${x}</button>`).join('')}</div>
+    </section>
+    <section class="panel">
+      <h2>2. Pilih nomor absen <small>${k?'':'pilih kelas dulu'}</small></h2>
+      <div class="absen-grid">${Array.from({length:36},(_,i)=>i+1).map(n=>`<button class="pick" ${k?'':'disabled'} aria-pressed="${n===a}" onclick="pickAbsen(${n})">${n}</button>`).join('')}</div>
+    </section>
+    <div class="actions">
+      <button class="btn primary" ${ready?'':'disabled'} onclick="openConfirm()">Buka soalku</button>
+      <span class="hint">${ready?`Kamu ${k}, nomor absen ${a}.`:'Pilih kelas dan nomor absen untuk melanjutkan.'}</span>
+    </div>
+    <footer class="foot">${state.guru?'':'<button class="linkbtn" onclick="openPin()">Mode guru</button>'}</footer>`;
+}
+function pickKelas(x){state.kelas=x;renderPilih();}
+function pickAbsen(n){state.absen=n;renderPilih();}
+
+function openConfirm(){
+  $modal.hidden=false;
+  $modal.innerHTML=`<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dt">
+    <h3 id="dt">Sudah benar?</h3>
+    <p>Kamu dari kelas <b>${state.kelas}</b>, nomor absen <b>${state.absen}</b>. Soal dibuat dari pilihan ini dan tidak akan berubah.</p>
+    <div class="actions"><button class="btn" onclick="closeModal()">Ubah pilihan</button><button class="btn primary" onclick="bukaSoal()" id="okbtn">Ya, buka soal</button></div>
+  </div>`;
+  document.getElementById('okbtn').focus();
+}
+function closeModal(){$modal.hidden=true;$modal.innerHTML='';}
+function bukaSoal(){closeModal();state.view='soal';renderSoal();window.scrollTo(0,0);}
+function gantiSiswa(){state.view='pilih';renderPilih();window.scrollTo(0,0);}
+
+function openPin(){
+  $modal.hidden=false;
+  $modal.innerHTML=`<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="pt">
+    <h3 id="pt">Mode guru</h3>
+    <p>Masukkan PIN untuk melihat kunci jawaban dan pertanyaan lisan.</p>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="12" aria-label="PIN guru">
+    <div class="err" id="pinerr" role="alert"></div>
+    <div class="actions"><button class="btn" onclick="closeModal()">Batal</button><button class="btn primary" onclick="cekPin()">Masuk</button></div>
+  </div>`;
+  const inp=document.getElementById('pin');
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')cekPin();});
+  inp.focus();
+}
+function cekPin(){
+  const v=document.getElementById('pin').value.trim();
+  if(xmur3('guru-pin|'+v)()===PIN_HASH){state.guru=true;closeModal();state.view==='soal'?renderSoal():renderPilih();}
+  else{document.getElementById('pinerr').textContent='PIN salah. Coba lagi.';}
+}
+function keluarGuru(){state.guru=false;state.view==='soal'?renderSoal():renderPilih();}
+function toggleKey(){state.showKey=!state.showKey;renderSoal();}
+function cetak(withKey){document.body.classList.toggle('print-key',!!withKey);window.print();setTimeout(()=>document.body.classList.remove('print-key'),500);}
+
+function renderSoal(){
+  const {kelas:k,absen:a}=state;
+  const items=buildAll(k,a);
+  const showKey=state.guru&&state.showKey;
+  let out='',lastGrp='';
+  items.forEach((it,i)=>{
+    if(it.grp!==lastGrp){
+      lastGrp=it.grp;
+      out+=`<h2 class="grp">${it.grp==='KKA'?'KKA':'Informatika'}<small>${it.grp==='KKA'?'Koding dan Kecerdasan Artifisial':'Algoritma pencarian dan pengurutan'}</small></h2>`;
+    }
+    out+=`<article class="q">
+      <header><span class="no">${i+1}</span><h3>${it.judul}</h3></header>
+      ${it.soal}
+      ${showKey?`<section class="kunci"><h4>Kunci jawaban (guru)</h4>${it.kunci}</section>
+      <section class="lisan"><h4>Pertanyaan lisan untuk siswa</h4><ul class="list">${li(it.lisan)}</ul></section>`:''}
+    </article>`;
+  });
+  $app.innerHTML=`
+    <div class="toolbar noprint">
+      <div class="who"><span class="id">${k} · ${pad(a)}</span><span class="hint">Soal khusus untukmu</span></div>
+      <div class="actions">
+        ${state.guru?`<button class="btn small" onclick="toggleKey()">${state.showKey?'Sembunyikan kunci':'Tampilkan kunci'}</button>
+          <button class="btn small" onclick="cetak(true)">Cetak + kunci</button>`:''}
+        <button class="btn small" onclick="cetak(false)">Cetak soal</button>
+        <button class="btn small" onclick="gantiSiswa()">Ganti siswa</button>
+      </div>
+    </div>
+    ${state.guru?`<div class="guru-banner noprint"><span><b>Mode Guru aktif.</b> Soal ini milik ${k} nomor ${a}.</span><button class="btn small" onclick="keluarGuru()">Keluar mode guru</button></div>`:''}
+    <div class="brief"><b>Cara mengerjakan.</b> Salin soal ke kertas, kerjakan sendiri, lalu jelaskan jawabanmu kepada guru. Tabel di soal cukup digambar ulang di kertas. Kamu akan diminta menjelaskan langkah-langkahnya, bukan hanya hasil akhir.</div>
+    <div class="print-only-head" style="display:none"></div>
+    ${out}
+    <footer class="foot noprint">${state.guru?'':'<button class="linkbtn" onclick="openPin()">Mode guru</button>'}</footer>`;
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$modal.hidden)closeModal();});
+renderPilih();
+</script>
+</body>
+</html>
